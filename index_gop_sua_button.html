@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Anniversary 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      font-family: sans-serif;
+      height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      color: #fff;
+    }
+    #startEmoji {
+      font-size: 8em;
+      margin-bottom: 20px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    #startBtn {
+      font-size: 10em;
+      background: none;
+      border: none;
+      color: #ff8fab;
+      cursor: pointer;
+      animation: pulse 1.5s infinite;
+    }
+    .transition-img {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60vw;
+      height: 60vw;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff8fab;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 2;
+    }
+    #center-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      height: 60vw;
+      object-fit: cover;
+      clip-path: path("M 150 30 C 110 -20, 0 0, 0 100 C 0 180, 150 260, 150 260 C 150 260, 300 180, 300 100 C 300 0, 190 -20, 150 30 Z");
+      box-shadow: 0 0 40px #ffb6c1;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 3;
+    }
+    #overlayText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 10vw; /* GẤP ĐÔI kích thước hiện tại */
+  color: #ffccd5;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 4;
+  white-space: nowrap;
+}
+    #message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffccd5; /* giống overlayText */
+  font-size: 5vw; /* cân đối trên mọi thiết bị */
+  font-weight: bold;
+  font-family: sans-serif;
+  line-height: 1.8;
+  width: 90%;
+  max-width: 600px;
+  opacity: 0;
+  transition: opacity 2s ease-in;
+  z-index: 5;
+}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <!-- Màn hình bắt đầu -->
+  <div id="startScreen">
+ 
+    <button id="startBtn">💖</button>
+  </div>
+
+  <!-- Hiệu ứng chữ -->
+  <div id="overlayText">3</div>
+
+  <!-- Hình ảnh -->
+  <img src="THUY.jpg" id="img1" class="transition-img"/>
+  <img src="NHUNG.jpg" id="img2" class="transition-img"/>
+  <img src="DOI.jpg" id="center-img"/>
+
+  <!-- Thông điệp cuối -->
+  <div id="message">
+  <div style="text-align: center;">Dù thời gian cứ trôi qua</div>
+  <div style="text-align: center;">Nhưng chúng mình hãy mãi như ngày đầu em nhé!</div>
+  <div style="text-align: right;">chị yêu bé 💗</div>
+</div>
+
+  <!-- Nhạc nền -->
+  <audio id="bgMusic" loop>
+    <source src="NHAC.mp3" type="audio/mpeg" />
+    Trình duyệt không hỗ trợ nhạc.
+  </audio>
+
+  <script>
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "HAPPYANNIVERSARY";
+    const fontSize = 16;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffb6c1";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 50);
+
+    const startScreen = document.getElementById("startScreen");
+    const startBtn = document.getElementById("startBtn");
+    const audio = document.getElementById("bgMusic");
+
+    const overlay = document.getElementById("overlayText");
+    const texts = ["3", "2", "1", "HAPPY", "ANNIVERSARY", "365", "DAY"];
+    let index = 0;
+
+    startBtn.addEventListener("click", () => {
+      startScreen.style.display = "none";
+      audio.play().catch(err => console.log("Không phát nhạc được:", err));
+      showText();
+    });
+
+    function showText() {
+      if (index < texts.length) {
+        overlay.textContent = texts[index++];
+        overlay.style.opacity = 1;
+        setTimeout(() => {
+          overlay.style.opacity = 0;
+          setTimeout(showText, 800);
+        }, 1200);
+      } else {
+        showImageSequence();
+      }
+    }
+
+    function showImageSequence() {
+      const img1 = document.getElementById("img1");
+      const img2 = document.getElementById("img2");
+      const center = document.getElementById("center-img");
+      const message = document.getElementById("message");
+
+      img1.style.opacity = 1;
+      setTimeout(() => {
+        img1.style.opacity = 0;
+        img2.style.opacity = 1;
+        setTimeout(() => {
+          img2.style.opacity = 0;
+          center.style.opacity = 1;
+          setTimeout(() => {
+            center.style.opacity = 0;
+            message.style.opacity = 1;
+          }, 2500);
+        }, 2000);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
